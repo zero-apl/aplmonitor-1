@@ -1,0 +1,483 @@
+<%inherit file="/home_application/home_base.html"/>
+
+<%block name="extend">
+    <link rel="stylesheet" type="text/css" href="${STATIC_URL}css/table.css">
+    <script type="text/javascript" src="${STATIC_URL}js/jquery-1.10.2.min.js"></script>
+    <!-- 前台分页 -->
+    <script type="text/javascript" src="${STATIC_URL}js/back-endPage.js"></script>
+    <!-- 折线图 -->
+    <script type="text/javascript" src="${STATIC_URL}js/echarts.js"></script>
+</%block>
+
+<%block name="content">
+    <style>
+         table{
+             width:600px;
+             text-align:center;
+             }
+         table tr th,td{
+             height:30px;
+             line-height:30px;
+             border:1px solid #57617b;
+             }
+          #pageStyle{
+             display:inline-block;
+             width:32px;
+             height:32px;
+             border:1px solid #CCC;
+             line-height:32px;
+             text-align:center;
+             color:#999;
+             margin-top:20px;
+             text-decoration:none;
+
+             }
+          #pageStyle:hover{
+              background-color:#CCC;
+              }
+          #pageStyle .active{
+              background-color:#0CF;
+              color:#ffffff;
+              }
+        </style>
+<div class="king-main-container">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3">
+                    <!-- 样例 Start -->
+                    <div class="king-widget1">
+                        <div class="icon-wrap">
+                            <span class="fa-stack king-bg-info">
+                                <i class="fa fa-flag fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                        <div class="text-wrap">
+                            <!-- 查询今天00：00开始的告警数量统计 -->
+                            <h3>今日告警数量</h3>
+                            <p>
+                                <h4>${context["today_alarm"]}</h4>
+                            </p>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="progress progress-xs">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                <span class="sr-only">80% Complete</span>
+                            </div>
+                        </div>
+                        <p>
+                            <h4>同比昨天${context["alarm_ratio"]}</h4>
+                        </p>
+                    </div>
+                    <!-- 样例 End -->
+                </div>
+                <div class="col-sm-3">
+                    <!-- 样例 Start -->
+                    <div class="king-widget1">
+                        <div class="icon-wrap">
+                            <span class="fa-stack king-bg-danger">
+                                <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                        <div class="text-wrap">
+                            <h3>1,234</h3>
+                            <p>
+                                周期告警数量
+                            </p>
+                        </div>
+                        <div class="clear">
+                        </div>
+                        <div class="progress progress-xs">
+                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 65%">
+                                <span class="sr-only">65% Complete</span>
+                            </div>
+                        </div>
+                        <p>
+                            ？？？
+                            同比昨天增长5%
+                        </p>
+                    </div>
+                    <!-- 样例 End -->
+                </div>
+                <div class="col-sm-3">
+                    <!-- 样例 Start -->
+                    <div class="king-widget1">
+                        <div class="icon-wrap">
+                            <span class="fa-stack king-bg-success">
+                                <i class="fa fa-cloud-download fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                        <div class="text-wrap">
+                            <h3>5,214</h3>
+                            <p>
+                                链路告警
+                            </p>
+                        </div>
+                        <div class="clear">
+                        </div>
+                        <div class="progress progress-xs">
+                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 95%">
+                                <span class="sr-only">95% Complete</span>
+                            </div>
+                        </div>
+                        <p>
+                            同比昨天增长12%
+                        </p>
+                    </div>
+                    <!-- 样例 End -->
+                </div>
+                <div class="col-sm-3">
+                    <!-- 样例 Start -->
+                    <div class="king-widget1">
+                        <div class="icon-wrap">
+                            <span class="fa-stack king-bg-warning">
+                                <i class="fa fa-cloud-download fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                        <div class="text-wrap">
+                            <h3>5,214</h3>
+                            <p>
+                                警告消息
+                            </p>
+                        </div>
+                        <div class="clear">
+                        </div>
+                        <div class="progress progress-xs">
+                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 25%">
+                                <span class="sr-only">25% Complete</span>
+                            </div>
+                        </div>
+                        <p>
+                            同比昨天增长12%
+                        </p>
+                    </div>
+                    <!-- 样例 End -->
+                </div>
+            </div>
+
+            <div class="row mt20">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">活动告警</h3>
+                        </div>
+                        <div class="list-group">
+                           <!-- 实时告警数据展示 -->
+                            <div id="histroyBox"></div>
+                            <p id="alarm_url" style="display: none">${SITE_URL}alarm_json_data/</p>
+                            <script type="text/javascript">
+                                //前台分页的样子
+                               /* var obj = eval('(' + $("#testid").text() + ')');
+                                console.log(typeof obj);
+                                $('#histroyBox').CJJTable({
+                                    'title':["节点/IP","告警名称","告警内容","触发时间","告警类型"],//thead中的标题 必填
+                                    'body':["ip","alarm_name","alarm_content","begin_time","alarm_type","source"],//tbody td 取值的字段 必填
+                                    'display':[1,1,1,1,1,2],//隐藏域，1显示，2隐藏 必填
+                                    'pageNUmber':10,//每页显示的条数 选填
+                                    'pageLength':obj.length,//选填
+                                    'url':obj,//数据源 必填
+                                    dbTrclick:function(e){//双击tr事件
+                                        debugger;
+                                        var source = $('.source').html();
+
+                                        if (source == 1){
+                                            window.open('http://paas.blueking.com/o/bk_monitor/2/overview/');
+                                        } else if (source == 2) {
+                                            window.open('http://192.168.1.195:9996/orion/netperfmon/alerts.aspx');
+                                        }
+
+
+                                   }
+                                });*/
+                                //后台分页的样子
+                                var url = $("#alarm_url").text();
+                                $('#histroyBox').CJJTable({
+                                    'title':["节点/IP","告警名称","告警内容","触发时间","告警类型"],//thead中的标题 必填
+                                    'body':["ip","alarm_name","alarm_content","begin_time","alarm_type","source"],//tbody td 取值的字段 必填
+                                    'display':[1,1,1,1,1,2],//隐藏域，1显示，2隐藏 必填
+                                    'pageJson':{
+                                        "pageSize":10//ajax请求参数中的每页展示数量 选填
+                                    },
+                                    'url':url,//数据源 必填
+                                    dbTrclick:function(e){//双击tr事件
+                                        var source = $('.source').html();
+
+                                        if (source == 1){
+                                            window.open('http://paas.blueking.com/o/bk_monitor/2/overview/');
+                                        } else if (source == 2) {
+                                            window.open('http://192.168.1.195:9996/orion/netperfmon/alerts.aspx');
+                                        }
+
+
+                                   }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">拓扑图</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <!-- 拓扑引擎 -->
+                            <div id="container" style="height: 513px ;width:100%"></div>
+                            <script type="text/javascript">
+                                var a = [0, 50, 150, 75, 33, 249, 333, 18, 66, 110, 999, 122]
+                                var dom = document.getElementById("container");
+                                var myChart = echarts.init(dom);
+                                option = null;
+                                option = {
+                                    backgroundColor: '#394056',
+                                    title: {
+                                        text: '请求数',
+                                        textStyle: {
+                                            fontWeight: 'normal',
+                                            fontSize: 16,
+                                            color: '#F1F1F3'
+                                        },
+                                        left: '6%'
+                                    },
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        axisPointer: {
+                                            lineStyle: {
+                                                color: '#57617B'
+                                            }
+                                        }
+                                    },
+                                    legend: {
+                                        icon: 'rect',
+                                        itemWidth: 14,
+                                        itemHeight: 14,
+                                        itemGap: 13,
+                                        data: ['移动', '电信', '联通','hello'],
+                                        right: '4%',
+                                        textStyle: {
+                                            fontSize: 14,
+                                            color: '#F1F1F3'
+                                        }
+                                    },
+                                    grid: {
+                                        left: '3%',
+                                        right: '4%',
+                                        bottom: '3%',
+                                        containLabel: true
+                                    },
+                                    xAxis: [{
+                                        type: 'category',
+                                        boundaryGap: false,
+                                        axisLine: {
+                                            lineStyle: {
+                                                color: '#57617B'
+                                            }
+                                        },
+                                        data: ['13:00', '13:05', '13:10', '13:15', '13:20', '13:25', '13:30', '13:35', '13:40', '13:45', '13:50', '13:55']
+                                    },
+                                        {
+                                        axisPointer: {
+                                            show: false
+                                        },
+                                        axisLine: {
+                                            lineStyle: {
+                                                color: '#57617B'
+                                            }
+                                        },
+                                        axisTick: {
+                                            show: false
+                                        },
+
+                                        position: 'bottom',
+                                        offset: 20,
+                                        data: ['', '', '', '', '', '', '', '', '', '',]
+                                    }],
+                                    yAxis: [{
+                                        type: 'value',
+                                        name: '单位（%）',
+                                        axisTick: {
+                                            show: false
+                                        },
+                                        axisLine: {
+                                            lineStyle: {
+                                                color: '#57617B'
+                                            }
+                                        },
+                                        axisLabel: {
+                                            margin: 10,
+                                            textStyle: {
+                                                fontSize: 14
+                                            }
+                                        },
+                                        splitLine: {
+                                            lineStyle: {
+                                                color: '#57617B'
+                                            }
+                                        }
+                                    }],
+                                    toolbox: {
+            left: 'center',
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+                                    dataZoom: [{
+            startValue: '13:25'
+        }, {
+            type: 'inside'
+        }],
+                                    series: [{
+                                        name: '移动',
+                                        type: 'line',
+                                        smooth: true,
+                                        symbol: 'circle',
+                                        symbolSize: 5,
+                                        showSymbol: false,
+                                        lineStyle: {
+                                            normal: {
+                                                width: 1
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                    offset: 0,
+                                                    color: 'rgba(137, 189, 27, 0.3)'
+                                                }, {
+                                                    offset: 0.8,
+                                                    color: 'rgba(137, 189, 27, 0)'
+                                                }], false),
+                                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                                shadowBlur: 10
+                                            }
+                                        },
+                                        itemStyle: {
+                                            normal: {
+                                                color: 'rgb(137,189,27)',
+                                                borderColor: 'rgba(137,189,2,0.27)',
+                                                borderWidth: 12
+
+                                            }
+                                        },
+                                        data: [220, 182, 191, 134, 150, 120, 110, 125, 145, 122, 165, 122]
+                                    },
+                                        {
+                                        name: '电信',
+                                        type: 'line',
+                                        smooth: true,
+                                        symbol: 'circle',
+                                        symbolSize: 5,
+                                        showSymbol: false,
+                                        lineStyle: {
+                                            normal: {
+                                                width: 1
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                    offset: 0,
+                                                    color: 'rgba(0, 136, 212, 0.3)'
+                                                }, {
+                                                    offset: 0.8,
+                                                    color: 'rgba(0, 136, 212, 0)'
+                                                }], false),
+                                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                                shadowBlur: 10
+                                            }
+                                        },
+                                        itemStyle: {
+                                            normal: {
+                                                color: 'rgb(0,136,212)',
+                                                borderColor: 'rgba(0,136,212,0.2)',
+                                                borderWidth: 12
+
+                                            }
+                                        },
+                                        data: [120, 110, 125, 145, 122, 165, 122, 220, 182, 191, 134, 150]
+                                    }, {
+                                        name: '联通',
+                                        type: 'line',
+                                        smooth: true,
+                                        symbol: 'circle',
+                                        symbolSize: 5,
+                                        showSymbol: false,
+                                        lineStyle: {
+                                            normal: {
+                                                width: 1
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                    offset: 0,
+                                                    color: 'rgba(219, 50, 51, 0.3)'
+                                                }, {
+                                                    offset: 0.8,
+                                                    color: 'rgba(219, 50, 51, 0)'
+                                                }], false),
+                                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                                shadowBlur: 10
+                                            }
+                                        },
+                                        itemStyle: {
+                                            normal: {
+
+                                                color: 'rgb(219,50,51)',
+                                                borderColor: 'rgba(219,50,51,0.2)',
+                                                borderWidth: 12
+                                            }
+                                        },
+                                        data: [220, 182, 125, 145, 122, 191, 134, 150, 120, 110, 165, 122]
+                                    },
+                                        {
+                                        name: 'hello',
+                                        type: 'line',
+                                        smooth: true,
+                                        symbol: 'circle',
+                                        symbolSize: 5,
+                                        showSymbol: false,
+                                        lineStyle: {
+                                            normal: {
+                                                width: 1
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                    offset: 0,
+                                                    color: 'rgba(266, 100, 51, 0.3)'
+                                                }, {
+                                                    offset: 0.8,
+                                                    color: 'rgba(266, 100, 51, 0)'
+                                                }], false),
+                                                shadowColor: 'rgba(0, 0, 0, 0.1)',
+                                                shadowBlur: 10
+                                            }
+                                        },
+                                        itemStyle: {
+                                            normal: {
+
+                                                color: 'rgb(266,100,51)',
+                                                borderColor: 'rgba(266,100,51,0.2)',
+                                                borderWidth: 12
+                                            }
+                                        },
+                                        data: a
+                                    },]
+                                };
+                                if (option && typeof option === "object") {
+                                    myChart.setOption(option, true);
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</%block>
+

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+    <%block name='head'>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ALPVIEW监控展示</title>
+    <!-- Bootstrap css -->
+    <link href="${STATIC_URL}css/bootstrap_noresponsive.css" rel="stylesheet">
+
+    <link href="${STATIC_URL}css/bk.css" rel="stylesheet">
+    <link href="${STATIC_URL}css/main.css" rel="stylesheet">
+    <!-- 以下两个插件用于在IE8以及以下版本浏览器支持HTML5元素和媒体查询，如果不需要用可以移除 -->
+    <!--[if lt IE 9]-->
+    <script src="https://magicbox.bkclouds.cc/static_api/v3/assets/js/html5shiv.min.js"></script>
+    <script src="https://magicbox.bkclouds.cc/static_api/v3/assets/js/respond.min.js"></script>
+    </%block>
+    <%block name="extend"></%block>
+
+</head>
+<body>
+<div class="wrap">
+    <!-- 头部 -->
+    <header>
+        <div class="navbar navbar-black">
+            <div class="navbar-container">
+                <div class="navbar-header pull-left">
+                    <a class="navbar-brand" href="${SITE_URL}">
+                        <img src="${STATIC_URL}img/logo.png">
+                    </a>
+                </div>
+
+                <div class="navbar-header pull-right">
+                    <ul class="nav">
+                        <li class="user-info">
+                            <a href="#">
+                                <img class="img-rounded" src="${STATIC_URL}img/avatar.png">
+                                <span>admin</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- 头部 -->
+
+    <!-- 侧边栏 -->
+    <div class="king-vertical-nav4">
+        <div class="sidebar-inner">
+            <ul class="navi">
+                <li class="current active">
+                    <a href="${SITE_URL}">
+                        <img src="${STATIC_URL}img/homepage.png">&nbsp;&nbsp;首页
+                    </a>
+                </li>
+                <li class="has_submenu">
+                    <a href="javascript:;">
+                        <img src="${STATIC_URL}img/qrcode.png">&nbsp;&nbsp;图表
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="top10.html">TOP 10</a>
+                        </li>
+                        <li>
+                            <a href="form2.html">null</a>
+                        </li>
+                        <li>
+                            <a href="form3.html">null</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="has_submenu">
+                    <a href="javascript:;">
+                        <img src="${STATIC_URL}img/message.png">&nbsp;&nbsp;告警
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="alert_all.html">所有告警</a>
+                        </li>
+                        <li>
+                            <a href="${SITE_URL}alert_search">告警查询</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="last has_submenu">
+                    <a href="javascript:;">
+                        <img src="${STATIC_URL}img/other.png">&nbsp;&nbsp;其他
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <a href="${SITE_URL}json_test">空白</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <%block name='content'></%block>
+</div>
+
+</body>
+<!-- 如果要使用Bootstrap的js插件，必须先调入jQuery -->
+<script src="${STATIC_URL}js/jquery-1.10.2.min.js"></script>
+<!-- 包括所有bootstrap的js插件或者可以根据需要使用的js插件调用　-->
+<script src="https://magicbox.bkclouds.cc/static_api/v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+
+<script src="https://magicbox.bkclouds.cc/static_api/v3/bk/js/bk.js"></script>
+
+<script src="${STATIC_URL}js/index.js"></script>
+<%block name="custom_js"></%block>
+</html>

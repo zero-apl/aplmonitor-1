@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TOP 10</title>
+</head>
+<body>
+    <div>
+    </div>
+    <div>
+        <div class="top-lg-1" style="margin: 20px 20px 20px 20px;hight:500px;width: 50%">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">TOP10-CPU</h3>
+                    </div>
+                    <div class="list-group">
+                       <!-- 实时告警数据展示 -->
+                        <div id="histroyBox"></div>
+                        <p id = "testid" style="display:none">${context["alarm"]}</p>
+                        <script type="text/javascript">
+                            //前台分页的样子
+                            var obj = eval('(' + $("#testid").text() + ')');
+                            console.log(typeof obj);
+                            $('#histroyBox').CJJTable({
+                                'title':["节点/IP","告警名称","告警内容","触发时间","告警类型"],//thead中的标题 必填
+                                'body':["ip","alarm_name","alarm_content","begin_time","alarm_type","source"],//tbody td 取值的字段 必填
+                                'display':[1,1,1,1,1,2],//隐藏域，1显示，2隐藏 必填
+                                'pageNUmber':10,//每页显示的条数 选填
+                                'pageLength':obj.length,//选填
+                                'url':obj,//数据源 必填
+                                dbTrclick:function(e){//双击tr事件
+                                    var source = $('.source').html();
+                                    if (source == 1){
+                                        window.open('http://paas.blueking.com/o/bk_monitor/2/overview/');
+                                    } else if (source == 2) {
+                                        window.open('http://192.168.1.195:9996/orion/netperfmon/alerts.aspx');
+                                    }
+
+
+                               }
+                            });
+                            //后台分页的样子
+                            /*$('#histroyBox').CJJTable({
+                                'title':["节点/IP","告警名称","告警内容","触发时间","告警类型"],//thead中的标题 必填
+                                'body':["contactName","contactMobliePhone","carrierName","taskNum","taskCustomerExpectPrice","taskCustomerBudgetFreight"],//tbody td 取值的字段 必填
+                                'display':[1,1,1,1,2,2],//隐藏域，1显示，2隐藏 必填
+                                'pageJson':{
+                                    "taskId":528710,
+                                    "pageSize":100,//ajax请求参数中的每页展示数量 选填
+                                    "token":"yJUmunFeG3REqisYAmCfeA"
+                                },
+                                'url':'api/quoted/quotedList',//数据源 必填
+                                dbTrclick:function(that){ //双击tr事件
+                                    alert(that.find('.contactName').html())
+                                }
+                            });*/
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="top-lg-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TOP10-C内存使用率</h3>
+                </div>
+
+            </div>
+        </div>
+        <div class="top-lg-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TOP10-响应时间</h3>
+                </div>
+
+            </div>
+        </div>
+        <div class="ctop-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">TOP10-丢包率</h3>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

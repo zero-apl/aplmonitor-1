@@ -1,0 +1,275 @@
+<%inherit file="/home_application/home_base.html"/>
+<%block name="extend">
+    <title>告警查询</title>
+    <script type="text/javascript" src="${STATIC_URL}js/back-endPage.js"></script>
+    <script>
+        $.fn.selectDate = function(){
+			var minYear = 1900
+			var maxYear = (new Date).getFullYear()
+			var yearSel = document.getElementById('year')
+			var monthSel = document.getElementById('month')
+			var daySel = document.getElementById('days')
+
+			for(var y = maxYear;y >= minYear;y--){
+				var yearOpt = document.createElement('option')
+				yearOpt.value = y
+				yearOpt.innerHTML = y+'年'
+				yearSel.appendChild(yearOpt)
+			}
+
+			$("#year").click(function(event){
+				if(!$("#year option:selected").val()) return;
+				removeOption(monthSel)
+				addOption(12,'月',monthSel)
+				removeOption(daySel)
+			})
+
+			$("#month").click(function(){
+				removeOption(daySel)
+				var year = $("#year option:selected").val()
+				var month = $("#month option:selected").val()
+				if(month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12){
+					addOption(31,'日',daySel)
+				}else if(month==4 || month==6 || month==9 || month==11){
+					addOption(30,'日',daySel)
+				}else if(month==2){
+					if((year%4 == 0 && year%100 != 0 ) || (year%400 == 0)){
+						addOption(29,'日',daySel)
+					}else{
+						addOption(28,'日',daySel)
+					}
+				}
+			})
+
+			function addOption(num,unit,parent){
+				//num：选项个数
+				//unit：单位（年/月/日）
+				//parent：父对象
+				for(var index=1;index <= num;index++){
+					var opt =document.createElement('option')
+					$(opt).attr('value',index)
+					if(index<10){index = '0'+index}
+					$(opt).html(index+unit)
+					$(parent).append(opt)
+				}
+			}
+
+			function removeOption(parent){
+				//parent：父对象
+				var options = $(parent).find('option')
+				for(var index = 1;index < options.length;index++){
+					parent.removeChild(options[index])
+				}
+			}
+		}
+    </script>
+    <script>
+        //var data= ;
+        $(document).ready(function () {
+            var seach=$(#seach)
+        });
+    </script>
+    <!-- 点击事件 -->
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(){
+
+            });
+        });
+    </script>
+    <script>
+        var obj = eval('(' + $("#testid").text() + ')');
+                            console.log(typeof obj);
+        function ajaxPost(){
+            $.ajax({
+                data:{
+                    "ip":$('#ip input[type=text]').val(),
+                    "node_name":$('#node_name input[type=text]').val(),
+                    "node_type":$('#node_type input[type=text]').val(),
+                    "data":$('#year option:selected').val()+"-"+$('#month option:selected').val()+"-"+$('#days option:selected').val(),
+                    //"days_number":$('#days_number option:selected').val(),
+                    //"alert_number":$('#alert_number input[type=text]').val(),
+                    },
+                    type:"Post",
+                    async:false,                //加上这个属性就好了
+                    dataType: 'json',
+                    url:"addStudent.jsp",
+                    error:function(data){
+                    alert('添加失败！');
+                    },
+                    success:function(data){
+                    alert('添加成功！');
+                    window.location.href = 'list.jsp'
+                    }
+                });
+            }
+    </script>
+</%block>
+
+<%block name="content">
+    <div class="king-main-container">
+        <div class="filter">
+            <div><h3>查询条件</h3></div>
+            <hr>
+            <div id="te" style="margin-left: 20px;margin-top: 20px;">
+                <tr style="">
+                    <td style="font-size: 10pt; "><b>按设备查询:</b></td>
+                    <td>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>IP地址</td>
+                                    <td></td>
+                                    <td>设备名称</td>
+                                    <td></td>
+                                    <td>设备类型</td>
+                                </tr>
+                                <tr>
+                                    <td id="ip"><input type="text" placeholder="请输入IP地址" autocomplete="off"></td>
+                                    <td id="or"><b>或者</b></td>
+                                    <td id="node_name"><input type="text" placeholder="请输入设备名称" autocomplete="off"></td>
+                                    <td><b>或者</b></td>
+                                    <td id="node_type"><input type="text" placeholder="设备类型" autocomplete="off"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+            </div>
+            <td></td>
+            <div style="margin-left: 20px;margin-top: 20px;">
+                <tr>
+                    <td style="width: 95px;font-size: 10pt"><b>按时间查询</b></td>
+                    <td>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td id="date_day">日期</td>
+                                    <td></td>
+                                    <td id="days_number">时间段</td>
+                                </tr>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--
+                                            <div id="date" style="margin-left: 100px;margin-top: 50px;">
+                                            -->
+                                            <div id="date" style="">
+                                            <select name="year" id="year">
+                                                <option value="">选择年份</option>
+                                            </select>
+                                            <select name="month" id="month">
+                                                <option value="">选择月份</option>
+                                            </select>
+                                            <select id="days" class="day">
+                                                <option value="">选择日期</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td><b>或者</b></td>
+                                    <td>
+                                        <div>
+                                            <select id="period" class="period">
+                                                <option value="1">这小时</option>
+                                                <option value="2">最近2小时</option>
+                                                <option value="3">最近24小时</option>
+                                                <option value="4" selected="selected">今天</option>
+                                                <option value="5">昨天</option>
+                                                <option value="6">最近7天</option>
+                                                <option value="7">最近30天</option>
+                                                <option value="8">最近3个月</option>
+                                                <option value="9">今年</option>
+                                                <option value="10">最近1年</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                <tr id="alert_number">
+                                   <a>显示告警的数量:</a>
+                                    <td><input type="text" placeholder="请输入显示条数" autocomplete="off"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <div>
+                    <button id="refresh">搜索</button>
+                </div>
+            </div>
+        </div>
+        <div class="search_result">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">查询结果</h3>
+                            <hr>
+                        </div>
+                        <div class="list-group">
+                           <!-- 实时告警数据展示 -->
+                            <div id="histroyBox"></div>
+                            <script type="text/javascript">
+                                //前台分页的样子
+                                var obj = eval('(' + $("#testid").text() + ')');
+                                console.log(typeof obj);
+                                $('#histroyBox').CJJTable({
+                                    'title':["节点/IP","告警名称","告警内容","触发时间","告警类型"],//thead中的标题 必填
+                                    'body':["ip","alarm_name","alarm_content","begin_time","alarm_type","source"],//tbody td 取值的字段 必填
+                                    'display':[1,1,1,1,1,2],//隐藏域，1显示，2隐藏 必填
+                                    'pageNUmber':100,//每页显示的条数 选填
+                                    'pageLength':obj.length,//选填
+                                    'url':obj,//数据源 必填
+                                    dbTrclick:function(e){//双击tr事件
+                                        var source = $('.source').html();
+                                        if (source == 1){
+                                            window.open('http://paas.blueking.com/o/bk_monitor/2/overview/');
+                                        } else if (source == 2) {
+                                            window.open('http://192.168.1.195:9996/orion/netperfmon/alerts.aspx');
+                                        }
+
+
+                                   }
+                                });
+                                //后台分页的样子
+                                /*$('#histroyBox').CJJTable({
+                                    'title':["节点/IP","告警名称","告警内容","触发时间","告警类型"],//thead中的标题 必填
+                                    'body':["contactName","contactMobliePhone","carrierName","taskNum","taskCustomerExpectPrice","taskCustomerBudgetFreight"],//tbody td 取值的字段 必填
+                                    'display':[1,1,1,1,2,2],//隐藏域，1显示，2隐藏 必填
+                                    'pageJson':{
+                                        "taskId":528710,
+                                        "pageSize":100,//ajax请求参数中的每页展示数量 选填
+                                        "token":"yJUmunFeG3REqisYAmCfeA"
+                                    },
+                                    'url':'api/quoted/quotedList',//数据源 必填
+                                    dbTrclick:function(that){ //双击tr事件
+                                        alert(that.find('.contactName').html())
+                                    }
+                                });*/
+                            </script>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div>
+
+    </div>
+    <script type="text/javascript">
+		$(function(){
+			$("#date").selectDate()
+
+			$("#days").focusout(function(){
+				var year = $("#year option:selected").html()
+				var month = $("#month option:selected").html()
+				var day = $("#days option:selected").html()
+				console.log(year+month+day)
+			})
+
+		})
+
+	</script>
+</%block>
