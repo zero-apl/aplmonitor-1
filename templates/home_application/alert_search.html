@@ -73,12 +73,7 @@
     <script>
         $(document).ready(function(){
             $("button").click(function(){
-
-            });
-        });
-    </script>
-    <script>
-        var obj = eval('(' + $("#testid").text() + ')');
+                var obj = eval('(' + $("#testid").text() + ')');
                             console.log(typeof obj);
         function ajaxPost(){
             $.ajax({
@@ -87,10 +82,10 @@
                     "node_name":$('#node_name input[type=text]').val(),
                     "node_type":$('#node_type input[type=text]').val(),
                     "data":$('#year option:selected').val()+"-"+$('#month option:selected').val()+"-"+$('#days option:selected').val(),
-                    //"days_number":$('#days_number option:selected').val(),
-                    //"alert_number":$('#alert_number input[type=text]').val(),
+                    "days_number":$('#days_number option:selected').val(),
+                    "alert_number":$('#alert_number input[type=text]').val(),
                     },
-                    type:"Post",
+                    type:"GET",
                     async:false,                //加上这个属性就好了
                     dataType: 'json',
                     url:"addStudent.jsp",
@@ -103,7 +98,10 @@
                     }
                 });
             }
+            });
+        });
     </script>
+
 </%block>
 
 <%block name="content">
