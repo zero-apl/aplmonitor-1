@@ -19,6 +19,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 
 """
+#test
 
 import os
 import sys
