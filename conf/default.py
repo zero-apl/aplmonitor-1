@@ -19,12 +19,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 
 """
-
 import os
 import sys
 # Import global settings to make it easier to extend settings.
 from django.conf.global_settings import *  # noqa
-
 
 # ==============================================================================
 # 应用基本信息配置 (请按照说明修改)
